@@ -47,6 +47,7 @@ public final class SentinelFeign {
 	}
 
 	public static Builder builder() {
+		// 返回一个自定义的 builder 对象
 		return new Builder();
 	}
 
@@ -80,6 +81,12 @@ public final class SentinelFeign {
 					// using reflect get fallback and fallbackFactory properties from
 					// FeignClientFactoryBean because FeignClientFactoryBean is a package
 					// level class, we can not use it in our package
+
+					// 通过获取 @FeignClient 的注解配置信息 bean
+					// 获取其 fallback 和 fallbackFactory 配置
+					// 再跟进 fallback 配置创建具体的 SentinelInvocationHandler, 其逻辑为:
+					//    1.如 fallback, 捕获异常后不执行 fallback, 但依然对方法包围成一个资源, 进行流控等处理.
+					//    2.若存在 fallback, 则捕获异常执行 fallback 方法. 即执行事先编码的类对应的方法.
 					Object feignClientFactoryBean = Builder.this.applicationContext
 							.getBean("&" + target.type().getName());
 
@@ -96,6 +103,7 @@ public final class SentinelFeign {
 					Object fallbackInstance;
 					FallbackFactory fallbackFactoryInstance;
 					// check fallback and fallbackFactory properties
+					// 校验
 					if (void.class != fallback) {
 						fallbackInstance = getFromContext(beanName, "fallback", fallback,
 								target.type());

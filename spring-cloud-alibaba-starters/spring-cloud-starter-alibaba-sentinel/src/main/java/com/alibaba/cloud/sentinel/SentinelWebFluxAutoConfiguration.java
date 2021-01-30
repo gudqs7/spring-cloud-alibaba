@@ -53,6 +53,10 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebFluxAutoConfiguration {
 
+	/*
+		web 环境为响应式时, 配置相应的 bean
+	 */
+
 	private static final Logger log = LoggerFactory
 			.getLogger(SentinelWebFluxAutoConfiguration.class);
 

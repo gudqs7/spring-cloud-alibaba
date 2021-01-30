@@ -70,6 +70,7 @@ public class NacosPropertySourceBuilder {
 	 */
 	NacosPropertySource build(String dataId, String group, String fileExtension,
 			boolean isRefreshable) {
+		// 这个 load 链到底多长, 没完没了了... 这就是代码设计的不合理啊.
 		List<PropertySource<?>> propertySources = loadNacosData(dataId, group,
 				fileExtension);
 		NacosPropertySource nacosPropertySource = new NacosPropertySource(propertySources,

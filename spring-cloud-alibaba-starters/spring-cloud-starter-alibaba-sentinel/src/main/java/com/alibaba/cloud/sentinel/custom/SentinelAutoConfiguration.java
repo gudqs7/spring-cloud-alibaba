@@ -139,6 +139,7 @@ public class SentinelAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SentinelResourceAspect sentinelResourceAspect() {
+		// 为配置 SentinelResource 提供 AOP 支持
 		return new SentinelResourceAspect();
 	}
 
@@ -149,6 +150,8 @@ public class SentinelAutoConfiguration {
 			matchIfMissing = true)
 	public SentinelBeanPostProcessor sentinelBeanPostProcessor(
 			ApplicationContext applicationContext) {
+		// 一个 BeanPostProcessor, 在注入带有 @SentinelRestTemplate 注解的 RestTemplate 的 bean 前
+		// 先注入一个 SentinelProtectInterceptor, 拦截请求, 加入流控降级逻辑.
 		return new SentinelBeanPostProcessor(applicationContext);
 	}
 
@@ -157,12 +160,15 @@ public class SentinelAutoConfiguration {
 	public SentinelDataSourceHandler sentinelDataSourceHandler(
 			DefaultListableBeanFactory beanFactory, SentinelProperties sentinelProperties,
 			Environment env) {
+		// 注入一些用户配置的数据源到容器中
 		return new SentinelDataSourceHandler(beanFactory, sentinelProperties, env);
 	}
 
 	@ConditionalOnClass(ObjectMapper.class)
 	@Configuration(proxyBeanMethods = false)
 	protected static class SentinelConverterConfiguration {
+
+		// 注册大量的 json/xml 配置文件转换器
 
 		@Configuration(proxyBeanMethods = false)
 		protected static class SentinelJsonConfiguration {

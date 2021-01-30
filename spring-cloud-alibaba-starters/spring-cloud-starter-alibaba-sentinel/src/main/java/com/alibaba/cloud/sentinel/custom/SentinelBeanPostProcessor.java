@@ -78,6 +78,8 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 						.getAnnotation(SentinelRestTemplate.class);
 			}
 			// check class and method validation
+			// 检查 SentinelRestTemplate 注解的配置数据是否无误
+			// 顺带保存配置到 BlockClassRegistry 中
 			checkSentinelRestTemplate(sentinelRestTemplate, beanName);
 			cache.put(beanName, sentinelRestTemplate);
 		}
@@ -198,6 +200,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 			String interceptorBeanName = interceptorBeanNamePrefix + "@"
 					+ bean.toString();
 			registerBean(interceptorBeanName, sentinelRestTemplate, (RestTemplate) bean);
+			// 立刻取出刚刚加入的 bean, 添加到 restTemplate 拦截器的首位.
 			SentinelProtectInterceptor sentinelProtectInterceptor = applicationContext
 					.getBean(interceptorBeanName, SentinelProtectInterceptor.class);
 			restTemplate.getInterceptors().add(0, sentinelProtectInterceptor);
@@ -208,6 +211,7 @@ public class SentinelBeanPostProcessor implements MergedBeanDefinitionPostProces
 	private void registerBean(String interceptorBeanName,
 			SentinelRestTemplate sentinelRestTemplate, RestTemplate restTemplate) {
 		// register SentinelProtectInterceptor bean
+		// 添加 SentinelProtectInterceptor(RestTemplate 的拦截器) bean
 		DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
 				.getAutowireCapableBeanFactory();
 		BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder

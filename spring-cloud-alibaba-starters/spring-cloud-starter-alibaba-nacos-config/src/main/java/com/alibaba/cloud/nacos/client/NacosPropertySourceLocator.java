@@ -135,6 +135,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 	private void loadApplicationConfiguration(
 			CompositePropertySource compositePropertySource, String dataIdPrefix,
 			NacosConfigProperties properties, Environment environment) {
+		// 根据扩展名, dataId, profile 分别调用 loadNacosDataIfPresent 加载配置.
 		String fileExtension = properties.getFileExtension();
 		String nacosGroup = properties.getGroup();
 		// load directly once by default
@@ -183,6 +184,7 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 		if (null == group || group.trim().length() < 1) {
 			return;
 		}
+		// 先 loadNacosPropertySource 加载得到一个 PropertySource, 然后加入到 composite 的头部, 使得上一层代码的逻辑(越后优先级越高)得以实现
 		NacosPropertySource propertySource = this.loadNacosPropertySource(dataId, group,
 				fileExtension, isRefreshable);
 		this.addFirstPropertySource(composite, propertySource, false);
@@ -190,6 +192,9 @@ public class NacosPropertySourceLocator implements PropertySourceLocator {
 
 	private NacosPropertySource loadNacosPropertySource(final String dataId,
 			final String group, String fileExtension, boolean isRefreshable) {
+		// 检查是否有更新
+		// 若有则检查是否配置了允许刷新
+		// 若有更新, 但配置不可刷新, 则返回缓存
 		if (NacosContextRefresher.getRefreshCount() != 0) {
 			if (!isRefreshable) {
 				return NacosPropertySourceRepository.getNacosPropertySource(dataId,

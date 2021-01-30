@@ -98,6 +98,8 @@ public class SentinelInvocationHandler implements InvocationHandler {
 				result = methodHandler.invoke(args);
 			}
 			else {
+				// 拦截方法, 发生异常则调用方法设定的 fallback 或 fallbackFactory(均被封装为 fallbackFactory)
+				// 发生异常则调用 fallback 指定的方法.
 				String resourceName = methodMetadata.template().method().toUpperCase()
 						+ ":" + hardCodedTarget.url() + methodMetadata.template().path();
 				Entry entry = null;

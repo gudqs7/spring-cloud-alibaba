@@ -50,6 +50,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableConfigurationProperties(SentinelProperties.class)
 public class SentinelWebAutoConfiguration implements WebMvcConfigurer {
 
+	/*
+		注入 web mvc 相关 bean, 如 SentinelWebInterceptor/UrlCleaner
+	 */
+
 	private static final Logger log = LoggerFactory
 			.getLogger(SentinelWebAutoConfiguration.class);
 
